@@ -56,17 +56,18 @@ export default function AdminDashboard() {
   const fetchStats = async () => {
     try {
       // Fetch stats from Supabase
-      const [projectsRes, publicationsRes, messagesRes] = await Promise.all([
+      const [projectsRes, publicationsRes, messagesRes, viewsRes] = await Promise.all([
         supabase.from('projects').select('id', { count: 'exact' }),
         supabase.from('publications').select('id', { count: 'exact' }),
-        supabase.from('contact_messages').select('id', { count: 'exact' })
+        supabase.from('contact_messages').select('id', { count: 'exact' }),
+        supabase.from('portfolio_views').select('id', { count: 'exact' })
       ]);
 
       setStats({
         projects: projectsRes.count || 0,
         publications: publicationsRes.count || 0,
         messages: messagesRes.count || 0,
-        views: 0, // We'll implement view tracking later
+        views: viewsRes.count || 0,
         lastUpdated: new Date().toISOString()
       });
     } catch (error) {
