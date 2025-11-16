@@ -68,7 +68,7 @@ export default function Sidebar() {
 
           {/* Sidebar container with enhanced styling */}
           <motion.div
-            className="relative bg-white/15 backdrop-blur-xl border border-white/30 rounded-full p-3 shadow-2xl overflow-hidden"
+            className="relative bg-white/15 backdrop-blur-xl border border-white/30 rounded-2xl p-3 shadow-2xl overflow-hidden"
             animate={{ width: isHovered ? 200 : 70 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
@@ -172,76 +172,54 @@ export default function Sidebar() {
         </div>
       </motion.div>
 
-      {/* Mobile Menu Button */}
-      <motion.button
-        className="fixed top-6 right-6 z-50 md:hidden bg-white/15 backdrop-blur-xl border border-white/30 rounded-full p-3 shadow-2xl"
-        onClick={() => setIsOpen(!isOpen)}
-        whileTap={{ scale: 0.95 }}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
+      {/* Mobile Bottom Navigation Bar */}
+      <motion.div
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/15 backdrop-blur-xl border-t border-white/30 shadow-2xl"
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
         transition={{ duration: 0.5, delay: 1 }}
       >
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </motion.div>
-      </motion.button>
+        <div className="flex justify-around items-center py-2 px-4">
+          {sections.map((section, index) => {
+            const Icon = section.icon;
+            const isActive = activeSection === section.id;
 
-      {/* Mobile Menu Overlay */}
-      <motion.div
-        className="fixed inset-0 z-40 md:hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        style={{ pointerEvents: isOpen ? "auto" : "none" }}
-      >
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
-
-        <motion.div
-          className="absolute right-6 top-20 bg-white/15 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-2xl min-w-[220px]"
-          initial={{ opacity: 0, scale: 0.8, y: -20 }}
-          animate={{
-            opacity: isOpen ? 1 : 0,
-            scale: isOpen ? 1 : 0.8,
-            y: isOpen ? 0 : -20
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="flex flex-col space-y-3">
-            {sections.map((section, index) => {
-              const Icon = section.icon;
-              const isActive = activeSection === section.id;
-
-              return (
-                <motion.button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 ${
-                    isActive
-                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/20"
-                  }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
+            return (
+              <motion.button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className={`relative flex flex-col items-center space-y-1 p-3 rounded-xl transition-all duration-300 ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
+              >
+                <motion.div
+                  className={`relative ${isActive ? 'text-white' : section.color}`}
+                  whileHover={{ rotate: 10, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <motion.div
-                    className={`relative ${isActive ? 'text-white' : section.color}`}
-                    whileHover={{ rotate: 10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Icon size={24} />
-                  </motion.div>
-                  <span className="font-semibold">{section.label}</span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </motion.div>
+                  <Icon size={20} />
+                  {/* Active indicator */}
+                  {isActive && (
+                    <motion.div
+                      className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    />
+                  )}
+                </motion.div>
+                <span className="text-xs font-medium">{section.label}</span>
+              </motion.button>
+            );
+          })}
+        </div>
       </motion.div>
     </>
   );
