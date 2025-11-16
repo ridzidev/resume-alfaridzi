@@ -23,14 +23,14 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://github.com"
+                href="https://github.com/ridzidev"
                 className="p-2 bg-gray-800 rounded-lg hover:bg-blue-600 transition-colors duration-300"
                 aria-label="GitHub"
               >
                 <Github size={20} />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/ridzima/"
                 className="p-2 bg-gray-800 rounded-lg hover:bg-blue-600 transition-colors duration-300"
                 aria-label="LinkedIn"
               >

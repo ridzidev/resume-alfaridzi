@@ -143,25 +143,25 @@ export default function Contact() {
               <h4 className="text-lg font-semibold mb-4">Follow Me</h4>
               <div className="flex space-x-4">
                 <a
-                  href="https://github.com"
+                  href="https://github.com/ridzidev"
                   className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300"
                   aria-label="GitHub"
                 >
                   GitHub
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/ridzima/"
                   className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300"
                   aria-label="LinkedIn"
                 >
                   LinkedIn
                 </a>
                 <a
-                  href="https://twitter.com"
+                  href="https://www.youtube.com/channel/UCqZFEuuBNIQ0KfS0wxXyrhQ"
                   className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300"
-                  aria-label="Twitter"
+                  aria-label="Youtube"
                 >
-                  Twitter
+                  Youtube
                 </a>
               </div>
             </div>

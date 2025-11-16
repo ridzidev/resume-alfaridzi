@@ -2,8 +2,40 @@
 
 import { motion } from "framer-motion";
 import { Calculator, Code, Smartphone, Monitor, Wrench, Globe, Award, BookOpen } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function About() {
+  const [stats, setStats] = useState({
+    projects: 0,
+    publications: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Fetch projects count
+        const { count: projectsCount } = await supabase
+          .from('projects')
+          .select('*', { count: 'exact', head: true });
+
+        // Fetch publications count
+        const { count: publicationsCount } = await supabase
+          .from('publications')
+          .select('*', { count: 'exact', head: true });
+
+        setStats({
+          projects: projectsCount || 0,
+          publications: publicationsCount || 0
+        });
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   const highlights = [
     {
       icon: Award,
@@ -140,9 +172,9 @@ export default function About() {
               viewport={{ once: true }}
             >
               {[
-                { number: "5+", label: "Years Experience" },
-                { number: "20+", label: "Projects Completed" },
-                { number: "10+", label: "Publications" }
+                { number: "8+", label: "Years Experience" },
+                { number: stats.projects.toString(), label: "Projects Completed" },
+                { number: stats.publications.toString(), label: "Publications" }
               ].map((stat, index) => (
                 <motion.div
                   key={stat.label}
