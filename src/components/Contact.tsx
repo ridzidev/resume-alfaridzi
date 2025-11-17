@@ -71,9 +71,9 @@ export default function Contact() {
   const contactInfo = [
     {
       icon: Mail,
-      label: "Email",
-      value: "alfa.ridzi@example.com",
-      href: "mailto:alfa.ridzi@example.com"
+      label: "Message Me",
+      value: "Send a Message",
+      href: "#contact"
     },
     {
       icon: Phone,
@@ -130,6 +130,8 @@ export default function Contact() {
                     <h4 className="font-semibold">{info.label}</h4>
                     <a
                       href={info.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
                     >
                       {info.value}
@@ -144,6 +146,8 @@ export default function Contact() {
               <div className="flex space-x-4">
                 <a
                   href="https://github.com/ridzidev"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300"
                   aria-label="GitHub"
                 >
@@ -151,6 +155,8 @@ export default function Contact() {
                 </a>
                 <a
                   href="https://www.linkedin.com/in/ridzima/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300"
                   aria-label="LinkedIn"
                 >
@@ -158,6 +164,8 @@ export default function Contact() {
                 </a>
                 <a
                   href="https://www.youtube.com/channel/UCqZFEuuBNIQ0KfS0wxXyrhQ"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300"
                   aria-label="Youtube"
                 >
