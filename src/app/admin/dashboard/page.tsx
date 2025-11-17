@@ -201,10 +201,10 @@ export default function AdminDashboard() {
               <Mail size={20} />
               <span>View Messages</span>
             </a>
-            <button className="flex items-center space-x-3 p-4 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors">
+            <a href="/admin/analytics" className="flex items-center space-x-3 p-4 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors">
               <BarChart3 size={20} />
               <span>View Analytics</span>
-            </button>
+            </a>
           </div>
         </motion.div>
 
