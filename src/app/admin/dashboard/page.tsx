@@ -44,6 +44,11 @@ export default function AdminDashboard() {
   }, []);
 
   const checkUser = async () => {
+    if (!supabase) {
+      router.push("/admin/login");
+      setLoading(false);
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/admin/login");
@@ -55,6 +60,11 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       // Fetch stats from Supabase
       const [projectsRes, publicationsRes, messagesRes, viewsRes] = await Promise.all([
         supabase.from('projects').select('id', { count: 'exact' }),
@@ -76,6 +86,10 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = async () => {
+    if (!supabase) {
+      console.error('Supabase client not initialized');
+      return;
+    }
     await supabase.auth.signOut();
     router.push("/admin/login");
   };

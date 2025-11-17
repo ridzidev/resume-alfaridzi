@@ -105,9 +105,9 @@ export default function AnalyticsPage() {
       }, {} as Record<string, number>);
 
       const topPages = Object.entries(pageCounts)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([,a], [,b]) => (b as number) - (a as number))
         .slice(0, 5)
-        .map(([page, views]) => ({ page, views }));
+        .map(([page, views]) => ({ page, views: views as number }));
 
       // Device stats
       const deviceStats = views.reduce((acc, view) => {
@@ -130,9 +130,9 @@ export default function AnalyticsPage() {
       }, {} as Record<string, number>);
 
       const referrerStats = Object.entries(referrerCounts)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([,a], [,b]) => (b as number) - (a as number))
         .slice(0, 5)
-        .map(([referrer, count]) => ({ referrer, count }));
+        .map(([referrer, count]) => ({ referrer, count: count as number }));
 
       setAnalyticsData({
         totalViews,

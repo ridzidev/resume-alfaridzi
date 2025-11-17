@@ -31,6 +31,12 @@ export default function Publications() {
 
   const fetchPublications = async () => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('publications')
         .select('*')
