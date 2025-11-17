@@ -27,7 +27,7 @@ export default function Home() {
         });
 
         if (!response.ok) {
-          console.error('Failed to track view');
+          console.error('Failed to track view:', response.status, response.statusText);
         }
       } catch (error) {
         console.error('Error tracking view:', error);

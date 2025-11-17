@@ -16,6 +16,12 @@ export async function POST(request: NextRequest) {
                clientIp ||
                'unknown';
 
+    // Check if supabase is available
+    if (!supabase) {
+      console.error('Supabase client not initialized');
+      return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
+    }
+
     // Insert view record
     const { error } = await supabase
       .from('portfolio_views')
