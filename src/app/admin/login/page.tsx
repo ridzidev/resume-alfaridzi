@@ -20,6 +20,12 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
+    if (!supabase) {
+      setError("Authentication service unavailable");
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,

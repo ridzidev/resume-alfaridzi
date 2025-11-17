@@ -42,6 +42,11 @@ export default function AdminMessages() {
   }, []);
 
   const checkUser = async () => {
+    if (!supabase) {
+      router.push("/admin/login");
+      setLoading(false);
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/admin/login");
