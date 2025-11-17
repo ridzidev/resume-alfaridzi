@@ -27,6 +27,12 @@ export default function Contact() {
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
+    if (!supabase) {
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // Validate form data
       if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
@@ -40,7 +46,7 @@ export default function Contact() {
       }
 
       // Save to Supabase
-      const { error } = await supabase
+      const { error } = await supabase!
         .from('contact_messages')
         .insert([
           {

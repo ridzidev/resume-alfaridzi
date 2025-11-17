@@ -102,7 +102,7 @@ export default function AdminPublications() {
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabase!
         .from('publications')
         .select('*')
         .order('year', { ascending: false });
@@ -132,14 +132,14 @@ export default function AdminPublications() {
       };
 
       if (editingPublication) {
-        const { error } = await supabase
+        const { error } = await supabase!
           .from('publications')
           .update(publicationData)
           .eq('id', editingPublication.id);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { error } = await supabase!
           .from('publications')
           .insert([publicationData]);
 
@@ -181,7 +181,7 @@ export default function AdminPublications() {
         return;
       }
 
-      const { error } = await supabase
+      const { error } = await supabase!
         .from('publications')
         .delete()
         .eq('id', id);
@@ -201,7 +201,7 @@ export default function AdminPublications() {
         return;
       }
 
-      const { error } = await supabase
+      const { error } = await supabase!
         .from('publications')
         .update({ featured: !publication.featured })
         .eq('id', publication.id);

@@ -37,7 +37,7 @@ export default function Publications() {
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabase!
         .from('publications')
         .select('*')
         .order('year', { ascending: false });

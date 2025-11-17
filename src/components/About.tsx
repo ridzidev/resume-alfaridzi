@@ -13,14 +13,16 @@ export default function About() {
 
   useEffect(() => {
     const fetchStats = async () => {
+      if (!supabase) return;
+
       try {
         // Fetch projects count
-        const { count: projectsCount } = await supabase
+        const { count: projectsCount } = await supabase!
           .from('projects')
           .select('*', { count: 'exact', head: true });
 
         // Fetch publications count
-        const { count: publicationsCount } = await supabase
+        const { count: publicationsCount } = await supabase!
           .from('publications')
           .select('*', { count: 'exact', head: true });
 
