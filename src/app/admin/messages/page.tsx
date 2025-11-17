@@ -58,6 +58,11 @@ export default function AdminMessages() {
 
   const fetchMessages = async () => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('contact_messages')
         .select('*')
@@ -72,6 +77,11 @@ export default function AdminMessages() {
 
   const markAsRead = async (messageId: string, isRead: boolean) => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { error } = await supabase
         .from('contact_messages')
         .update({ is_read: !isRead })
@@ -91,6 +101,11 @@ export default function AdminMessages() {
     if (!confirm('Are you sure you want to delete this message?')) return;
 
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { error } = await supabase
         .from('contact_messages')
         .delete()

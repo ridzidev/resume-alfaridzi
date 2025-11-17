@@ -87,6 +87,10 @@ export default function AdminProjects() {
   }, [projects, searchTerm, categoryFilter]);
 
   const checkUser = async () => {
+    if (!supabase) {
+      router.push("/admin/login");
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/admin/login");
@@ -95,6 +99,11 @@ export default function AdminProjects() {
 
   const fetchProjects = async () => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('projects')
         .select('*')
@@ -109,10 +118,31 @@ export default function AdminProjects() {
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      long_description: "",
+      category: "web_apps",
+      technologies: [],
+      github_url: "",
+      live_url: "",
+      image_url: "",
+      featured: false,
+    });
+    setEditingProject(null);
+    setShowForm(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const projectData = {
         ...formData,
         technologies: formData.technologies.filter(tech => tech.trim() !== ""),
@@ -161,6 +191,11 @@ export default function AdminProjects() {
     if (!confirm('Are you sure you want to delete this project?')) return;
 
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { error } = await supabase
         .from('projects')
         .delete()
@@ -176,6 +211,11 @@ export default function AdminProjects() {
 
   const toggleFeatured = async (project: Project) => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { error } = await supabase
         .from('projects')
         .update({ featured: !project.featured })
@@ -186,22 +226,6 @@ export default function AdminProjects() {
     } catch (error) {
       console.error('Error updating project:', error);
     }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      description: "",
-      long_description: "",
-      category: "web_apps",
-      technologies: [],
-      github_url: "",
-      live_url: "",
-      image_url: "",
-      featured: false,
-    });
-    setEditingProject(null);
-    setShowForm(false);
   };
 
   const addTechnology = () => {
