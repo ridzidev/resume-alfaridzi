@@ -85,6 +85,10 @@ export default function AdminPublications() {
   }, [publications, searchTerm, yearFilter]);
 
   const checkUser = async () => {
+    if (!supabase) {
+      router.push("/admin/login");
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/admin/login");
@@ -93,6 +97,11 @@ export default function AdminPublications() {
 
   const fetchPublications = async () => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('publications')
         .select('*')
@@ -111,6 +120,11 @@ export default function AdminPublications() {
     e.preventDefault();
 
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const publicationData = {
         ...formData,
         authors: formData.authors.filter(author => author.trim() !== ""),
@@ -162,6 +176,11 @@ export default function AdminPublications() {
     if (!confirm('Are you sure you want to delete this publication?')) return;
 
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { error } = await supabase
         .from('publications')
         .delete()
@@ -177,6 +196,11 @@ export default function AdminPublications() {
 
   const toggleFeatured = async (publication: Publication) => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
+
       const { error } = await supabase
         .from('publications')
         .update({ featured: !publication.featured })
