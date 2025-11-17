@@ -55,6 +55,10 @@ export default function AnalyticsPage() {
   }, []);
 
   const checkUser = async () => {
+    if (!supabase) {
+      router.push("/admin/login");
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/admin/login");
@@ -66,6 +70,11 @@ export default function AnalyticsPage() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
+
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        return;
+      }
 
       // Fetch all view data
       const { data: views, error } = await supabase
