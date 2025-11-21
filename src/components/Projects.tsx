@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Calendar, Code, Smartphone, Monitor, Wrench, Globe } from "lucide-react";
+import { ExternalLink, Github, Calendar, Code, Smartphone, Monitor, Wrench, Globe, Gamepad2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface Project {
@@ -25,6 +25,7 @@ const categoryIcons = {
   desktop_apps: Monitor,
   utility_tools: Wrench,
   web_apps: Globe,
+  game_dev: Gamepad2,
 };
 
 const categoryColors = {
@@ -80,6 +81,7 @@ export default function Projects() {
     { id: "mobile_apps", label: "Mobile Apps", count: projects.filter(p => p.category === "mobile_apps").length },
     { id: "desktop_apps", label: "Desktop Apps", count: projects.filter(p => p.category === "desktop_apps").length },
     { id: "utility_tools", label: "Utility Tools", count: projects.filter(p => p.category === "utility_tools").length },
+    { id: "game_dev", label: "Game Dev", count: projects.filter(p => p.category === "game_dev").length },
   ];
 
   if (loading) {
