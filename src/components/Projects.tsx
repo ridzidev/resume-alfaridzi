@@ -316,6 +316,7 @@ export default function Projects() {
 function TechnologyChart({ projects }: { projects: Project[] }) {
   const [techCounts, setTechCounts] = useState<{ [key: string]: number }>({});
   const [randomSeed, setRandomSeed] = useState(0);
+  const [positions, setPositions] = useState<{ [key: string]: { x: number, y: number } }>({});
 
   useEffect(() => {
     const counts: { [key: string]: number } = {};
@@ -332,6 +333,17 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
       });
     });
     setTechCounts(counts);
+    // Initialize random positions when techCounts change
+    const newPositions: { [key: string]: { x: number, y: number } } = {};
+    Object.keys(counts).forEach((tech) => {
+      const count = counts[tech];
+      const size = Math.max(40, Math.min(140, 40 + count * 20));
+      newPositions[tech] = {
+        x: Math.random() * (90 - (size / 6)) + 5 + (size / 12),
+        y: Math.random() * (90 - (size / 6)) + 5 + (size / 12),
+      };
+    });
+    setPositions(newPositions);
   }, [projects]);
 
   const sortedTechs = Object.entries(techCounts)
@@ -360,7 +372,16 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
   };
 
   const shufflePositions = () => {
-    setRandomSeed(prev => prev + 1);
+    const newPositions: { [key: string]: { x: number, y: number } } = {};
+    Object.keys(techCounts).forEach((tech) => {
+      const count = techCounts[tech];
+      const size = Math.max(40, Math.min(140, 40 + count * 20));
+      newPositions[tech] = {
+        x: Math.random() * (90 - (size / 6)) + 5 + (size / 12),
+        y: Math.random() * (90 - (size / 6)) + 5 + (size / 12),
+      };
+    });
+    setPositions(newPositions);
   };
 
   return (
@@ -407,10 +428,10 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
           {sortedTechs.map(([tech, count], index) => {
             const size = Math.max(40, Math.min(140, 40 + count * 20)); // More dynamic sizing: base 40, +20 per count, max 140
             const colorClass = getTechColor(index);
-            // Use randomSeed to force re-randomization
-            const seed = randomSeed + index;
-            const randomX = (Math.sin(seed * 0.1) * 0.5 + 0.5) * (90 - (size / 6)) + 5 + (size / 12);
-            const randomY = (Math.cos(seed * 0.1) * 0.5 + 0.5) * (90 - (size / 6)) + 5 + (size / 12);
+            // Use positions state for random positions
+            const pos = positions[tech] || { x: 50, y: 50 };
+            const randomX = pos.x;
+            const randomY = pos.y;
 
             return (
               <motion.div
@@ -467,7 +488,7 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
         viewport={{ once: true }}
         className="text-center text-gray-400 text-sm"
       >
-        <p>Bubble size represents usage frequency • <button onClick={shufflePositions} className="text-blue-400 hover:text-blue-300 underline">Shuffle positions</button></p>
+        <p>Bubble size represents usage frequency • <button onClick={shufflePositions} className="text-blue-400 hover:text-blue-300 underline">Randomize positions</button></p>
       </motion.div>
 
       {sortedTechs.length === 0 && (
