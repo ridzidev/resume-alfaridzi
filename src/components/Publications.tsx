@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, FileText, Calendar, Users, Award, Download } from "lucide-react";
+import { ExternalLink, FileText, Calendar, Users, Award, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface Publication {
@@ -24,10 +24,29 @@ interface Publication {
 export default function Publications() {
   const [publications, setPublications] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [lastInteraction, setLastInteraction] = useState(Date.now());
 
   useEffect(() => {
     fetchPublications();
   }, []);
+
+  // Auto-slide effect
+  useEffect(() => {
+    if (publications.length <= 1 || isHovered) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % publications.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [publications.length, isHovered]);
+
+  // Reset timer on interaction
+  const resetTimer = () => {
+    setLastInteraction(Date.now());
+  };
 
   const fetchPublications = async () => {
     try {
@@ -104,149 +123,205 @@ export default function Publications() {
           </motion.p>
         </motion.div>
 
-        {/* Publications List */}
-        <div className="max-w-4xl mx-auto space-y-8">
-          {publications.map((publication, index) => (
-            <motion.div
-              key={publication.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden"
+        {/* Publications Carousel */}
+        <div
+          className="max-w-4xl mx-auto relative"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Previous Button */}
+          {publications.length > 1 && (
+            <button
+              onClick={goToPrevious}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl rounded-full p-3 transition-all duration-300 hover:scale-110"
+              aria-label="Previous publication"
             >
-              {/* Featured Badge */}
-              {publication.featured && (
-                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 flex items-center space-x-2">
-                  <Award size={16} />
-                  <span className="text-sm font-semibold">Featured Publication</span>
-                </div>
-              )}
+              <ChevronLeft size={24} className="text-gray-600 dark:text-gray-300" />
+            </button>
+          )}
 
-              <div className="p-8">
-                {/* Title */}
-                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white leading-tight">
-                  {publication.title}
-                </h3>
+          {/* Next Button */}
+          {publications.length > 1 && (
+            <button
+              onClick={goToNext}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl rounded-full p-3 transition-all duration-300 hover:scale-110"
+              aria-label="Next publication"
+            >
+              <ChevronRight size={24} className="text-gray-600 dark:text-gray-300" />
+            </button>
+          )}
 
-                {/* Authors */}
-                <div className="flex items-center space-x-2 mb-4">
-                  <Users size={18} className="text-gray-500 dark:text-gray-400" />
-                  <div className="flex flex-wrap gap-2">
-                    {publication.authors.map((author, authorIndex) => (
-                      <span
-                        key={authorIndex}
-                        className={`text-sm font-medium ${
-                          author.toLowerCase().includes('ridzi') || author.toLowerCase().includes('alfa')
-                            ? 'text-blue-600 dark:text-blue-400'
-                            : 'text-gray-700 dark:text-gray-300'
-                        }`}
-                      >
-                        {author}{authorIndex < publication.authors.length - 1 ? ', ' : ''}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Journal and Year */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <FileText size={18} className="text-gray-500 dark:text-gray-400" />
-                    <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                      {publication.journal}
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar size={18} className="text-gray-500 dark:text-gray-400" />
-                    <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                      {publication.year}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Abstract */}
-                {publication.abstract && (
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Abstract</h4>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {publication.abstract}
-                    </p>
-                  </div>
-                )}
-
-                {/* Keywords */}
-                {publication.keywords && publication.keywords.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">Keywords</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {publication.keywords.map((keyword, keywordIndex) => (
-                        <span
-                          key={keywordIndex}
-                          className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full text-sm"
-                        >
-                          {keyword}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Stats */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-4">
-                    {publication.citation_count > 0 && (
-                      <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-400">
+          <div className="overflow-hidden rounded-xl">
+            <motion.div
+              className="flex"
+              animate={{ x: -currentIndex * 100 + "%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {publications.map((publication, index) => (
+                <div
+                  key={publication.id}
+                  className="w-full flex-shrink-0"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden"
+                  >
+                    {/* Featured Badge */}
+                    {publication.featured && (
+                      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 flex items-center space-x-2">
                         <Award size={16} />
-                        <span className="text-sm">{publication.citation_count} citations</span>
+                        <span className="text-sm font-semibold">Featured Publication</span>
                       </div>
                     )}
-                    {publication.doi && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        DOI: {publication.doi}
-                      </div>
-                    )}
-                  </div>
-                </div>
 
-                {/* Links */}
-                <div className="flex flex-wrap gap-4">
-                  {publication.journal_url && (
-                    <a
-                      href={publication.journal_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-300"
-                    >
-                      <ExternalLink size={16} />
-                      <span>View Paper</span>
-                    </a>
-                  )}
-                  {publication.pdf_url && (
-                    <a
-                      href={publication.pdf_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-300"
-                    >
-                      <Download size={16} />
-                      <span>Download PDF</span>
-                    </a>
-                  )}
-                  {publication.doi && (
-                    <a
-                      href={`https://doi.org/${publication.doi}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-300"
-                    >
-                      <FileText size={16} />
-                      <span>DOI Link</span>
-                    </a>
-                  )}
+                    <div className="p-8">
+                      {/* Title */}
+                      <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white leading-tight">
+                        {publication.title}
+                      </h3>
+
+                      {/* Authors */}
+                      <div className="flex items-center space-x-2 mb-4">
+                        <Users size={18} className="text-gray-500 dark:text-gray-400" />
+                        <div className="flex flex-wrap gap-2">
+                          {publication.authors.map((author, authorIndex) => (
+                            <span
+                              key={authorIndex}
+                              className={`text-sm font-medium ${
+                                author.toLowerCase().includes('ridzi') || author.toLowerCase().includes('alfa')
+                                  ? 'text-blue-600 dark:text-blue-400'
+                                  : 'text-gray-700 dark:text-gray-300'
+                              }`}
+                            >
+                              {author}{authorIndex < publication.authors.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Journal and Year */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2">
+                          <FileText size={18} className="text-gray-500 dark:text-gray-400" />
+                          <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                            {publication.journal}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Calendar size={18} className="text-gray-500 dark:text-gray-400" />
+                          <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
+                            {publication.year}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Abstract */}
+                      {publication.abstract && (
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Abstract</h4>
+                          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                            {publication.abstract}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Keywords */}
+                      {publication.keywords && publication.keywords.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">Keywords</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {publication.keywords.map((keyword, keywordIndex) => (
+                              <span
+                                key={keywordIndex}
+                                className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full text-sm"
+                              >
+                                {keyword}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Stats */}
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center space-x-4">
+                          {publication.citation_count > 0 && (
+                            <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-400">
+                              <Award size={16} />
+                              <span className="text-sm">{publication.citation_count} citations</span>
+                            </div>
+                          )}
+                          {publication.doi && (
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              DOI: {publication.doi}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Links */}
+                      <div className="flex flex-wrap gap-4">
+                        {publication.journal_url && (
+                          <a
+                            href={publication.journal_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-300"
+                          >
+                            <ExternalLink size={16} />
+                            <span>View Paper</span>
+                          </a>
+                        )}
+                        {publication.pdf_url && (
+                          <a
+                            href={publication.pdf_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-300"
+                          >
+                            <Download size={16} />
+                            <span>Download PDF</span>
+                          </a>
+                        )}
+                        {publication.doi && (
+                          <a
+                            href={`https://doi.org/${publication.doi}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-300"
+                          >
+                            <FileText size={16} />
+                            <span>DOI Link</span>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
-              </div>
+              ))}
             </motion.div>
-          ))}
+          </div>
+
+          {/* Navigation Dots */}
+          {publications.length > 1 && (
+            <div className="flex justify-center space-x-2 mt-8">
+              {publications.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                    index === currentIndex
+                      ? 'bg-blue-600'
+                      : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
+                  }`}
+                  aria-label={`Go to publication ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Empty State */}
