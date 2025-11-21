@@ -34,6 +34,7 @@ const categoryColors = {
   desktop_apps: "from-purple-500 to-purple-600",
   utility_tools: "from-orange-500 to-orange-600",
   web_apps: "from-pink-500 to-pink-600",
+  game_dev: "from-red-500 to-red-600",
 };
 
 export default function Projects() {
