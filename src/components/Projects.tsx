@@ -315,6 +315,7 @@ export default function Projects() {
 // Technology Chart Component
 function TechnologyChart({ projects }: { projects: Project[] }) {
   const [techCounts, setTechCounts] = useState<{ [key: string]: number }>({});
+  const [randomSeed, setRandomSeed] = useState(0);
 
   useEffect(() => {
     const counts: { [key: string]: number } = {};
@@ -356,6 +357,10 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
       'from-violet-500 to-violet-600',
     ];
     return colors[index % colors.length];
+  };
+
+  const shufflePositions = () => {
+    setRandomSeed(prev => prev + 1);
   };
 
   return (
@@ -402,8 +407,10 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
           {sortedTechs.map(([tech, count], index) => {
             const size = Math.max(40, Math.min(140, 40 + count * 20)); // More dynamic sizing: base 40, +20 per count, max 140
             const colorClass = getTechColor(index);
-            const randomX = Math.random() * (90 - (size / 6)) + 5 + (size / 12); // Random position as percentage, accounting for bubble size, with 5% margin
-            const randomY = Math.random() * (90 - (size / 6)) + 5 + (size / 12); // Random position as percentage, accounting for bubble size, with 5% margin
+            // Use randomSeed to force re-randomization
+            const seed = randomSeed + index;
+            const randomX = (Math.sin(seed * 0.1) * 0.5 + 0.5) * (90 - (size / 6)) + 5 + (size / 12);
+            const randomY = (Math.cos(seed * 0.1) * 0.5 + 0.5) * (90 - (size / 6)) + 5 + (size / 12);
 
             return (
               <motion.div
@@ -460,7 +467,7 @@ function TechnologyChart({ projects }: { projects: Project[] }) {
         viewport={{ once: true }}
         className="text-center text-gray-400 text-sm"
       >
-        <p>Bubble size represents usage frequency • Hover for details</p>
+        <p>Bubble size represents usage frequency • <button onClick={shufflePositions} className="text-blue-400 hover:text-blue-300 underline">Shuffle positions</button></p>
       </motion.div>
 
       {sortedTechs.length === 0 && (
