@@ -39,6 +39,7 @@ const categories = [
   { value: "mobile_apps", label: "Mobile Apps" },
   { value: "desktop_apps", label: "Desktop Apps" },
   { value: "utility_tools", label: "Utility Tools" },
+  { value: "game_dev", label: "Game Dev" },
 ];
 
 export default function AdminProjects() {
