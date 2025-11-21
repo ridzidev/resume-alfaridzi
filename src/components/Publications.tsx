@@ -48,6 +48,21 @@ export default function Publications() {
     setLastInteraction(Date.now());
   };
 
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % publications.length);
+    resetTimer();
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + publications.length) % publications.length);
+    resetTimer();
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    resetTimer();
+  };
+
   const fetchPublications = async () => {
     try {
       if (!supabase) {
